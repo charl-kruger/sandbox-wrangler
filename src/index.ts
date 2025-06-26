@@ -8,26 +8,24 @@ type Env = {
 
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
-		const pathname = new URL(request.url).pathname;
+		const sandbox = getSandbox(env.Sandbox, 'my-sandbox');
 
-		if (pathname.startsWith('/api')) {
-			const sandbox = getSandbox(env.Sandbox, 'my-sandbox');
+		await sandbox.gitCheckout('https://github.com/charl-kruger/basic-cloudflare-worker.git', {
+			branch: 'main',
+		});
 
-			await sandbox.gitCheckout('https://github.com/charl-kruger/basic-cloudflare-worker.git', {
-				branch: 'main',
-			});
+		await sandbox.exec('npm', ['install'], {
+			stream: false,
+		});
 
-			await sandbox.exec('npm', ['install'], {
-				stream: false,
-			});
+		const result = await sandbox.exec('npx', ['wrangler', 'build'], {
+			stream: false,
+		});
 
-			await sandbox.exec('npx', ['wrangler', 'build'], {
-				stream: false,
-			});
-
-			return sandbox.containerFetch(request);
-		}
-
-		return new Response('Not found', { status: 404 });
+		return new Response(JSON.stringify(result, null, 2), {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
 	},
 };

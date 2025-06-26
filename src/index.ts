@@ -18,13 +18,13 @@ export default {
 			stream: false,
 		});
 
-		console.log(install);
+		console.log('install', install);
 
 		const result = await sandbox.exec('npx', ['wrangler', 'build'], {
 			stream: false,
 		});
 
-		console.log(result);
+		console.log('result', result);
 
 		return new Response(JSON.stringify(result, null, 2), {
 			headers: {

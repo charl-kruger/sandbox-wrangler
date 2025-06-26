@@ -1,18 +1,33 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { getSandbox, type Sandbox } from '@cloudflare/sandbox';
+
+export { Sandbox } from '@cloudflare/sandbox';
+
+type Env = {
+	Sandbox: DurableObjectNamespace<Sandbox>;
+};
 
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
+	async fetch(request: Request, env: Env): Promise<Response> {
+		const pathname = new URL(request.url).pathname;
+
+		if (pathname.startsWith('/api')) {
+			const sandbox = getSandbox(env.Sandbox, 'my-sandbox');
+
+			await sandbox.gitCheckout('https://github.com/charl-kruger/basic-cloudflare-worker.git', {
+				branch: 'main',
+			});
+
+			await sandbox.exec('npm', ['install'], {
+				stream: false,
+			});
+
+			await sandbox.exec('npx', ['wrangler', 'build'], {
+				stream: false,
+			});
+
+			return sandbox.containerFetch(request);
+		}
+
+		return new Response('Not found', { status: 404 });
 	},
-} satisfies ExportedHandler<Env>;
+};

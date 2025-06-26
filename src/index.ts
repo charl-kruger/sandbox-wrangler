@@ -18,7 +18,7 @@ export default {
 			stream: false,
 		});
 
-		console.log('install', install);
+		console.log('npm install', install);
 
 		const result = await sandbox.exec('npx', ['wrangler', 'build'], {
 			stream: false,

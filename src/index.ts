@@ -14,13 +14,17 @@ export default {
 			branch: 'main',
 		});
 
-		await sandbox.exec('npm', ['install'], {
+		const install = await sandbox.exec('npm', ['install'], {
 			stream: false,
 		});
+
+		console.log(install);
 
 		const result = await sandbox.exec('npx', ['wrangler', 'build'], {
 			stream: false,
 		});
+
+		console.log(result);
 
 		return new Response(JSON.stringify(result, null, 2), {
 			headers: {

@@ -7,6 +7,8 @@ export default {
 		const sandbox = getSandbox(env.Sandbox, 'my-sandbox');
 		const result = await sandbox.exec('ls', ['-la']);
 
+		console.log('result', result);
+
 		return new Response(JSON.stringify(result, null, 2), {
 			headers: {
 				'Content-Type': 'application/json',

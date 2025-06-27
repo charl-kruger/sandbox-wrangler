@@ -13,9 +13,8 @@
 	"containers": [
 		{
 			"class_name": "Sandbox",
-			"image": "./node_modules/@cloudflare/sandbox/Dockerfile",
-			"name": "sandbox",
-			"max_instances": 1
+			"image": "./Dockerfile",
+			"name": "sandbox"
 		}
 	],
 	"durable_objects": {

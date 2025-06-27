@@ -16,6 +16,8 @@
 		"wrangler": "^4.22.0"
 	},
 	"dependencies": {
-		"@cloudflare/sandbox": "^0.0.5"
+		"@cloudflare/sandbox": "^0.0.5",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	}
 }

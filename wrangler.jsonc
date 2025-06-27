@@ -6,15 +6,24 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "sandbox-wrangler",
 	"main": "src/index.ts",
-	"compatibility_date": "2025-06-20",
+	"compatibility_date": "2025-05-06",
+	"compatibility_flags": ["nodejs_compat"],
 	"observability": {
 		"enabled": true
+	},
+	"assets": {
+		"directory": "public"
+	},
+	"build": {
+		"command": "bun build app/index.tsx --outdir public/dist",
+		"watch_dir": "app"
 	},
 	"containers": [
 		{
 			"class_name": "Sandbox",
 			"image": "./Dockerfile",
-			"name": "sandbox"
+			"name": "sandbox",
+			"max_instances": 1
 		}
 	],
 	"durable_objects": {

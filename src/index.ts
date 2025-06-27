@@ -1,18 +1,20 @@
-import { getSandbox } from '@cloudflare/sandbox';
+import { getSandbox, type Sandbox } from '@cloudflare/sandbox';
 
 export { Sandbox } from '@cloudflare/sandbox';
 
+type Env = {
+	Sandbox: DurableObjectNamespace<Sandbox>;
+};
+
 export default {
-	async fetch(request: Request, env: Env) {
-		const sandbox = getSandbox(env.Sandbox, 'my-sandbox');
-		const result = await sandbox.exec('ls', ['-la']);
+	async fetch(request: Request, env: Env): Promise<Response> {
+		const pathname = new URL(request.url).pathname;
 
-		console.log('result', result);
+		if (pathname.startsWith('/api')) {
+			const sandbox = getSandbox(env.Sandbox, 'my-sandbox');
+			return sandbox.containerFetch(request);
+		}
 
-		return new Response(JSON.stringify(result, null, 2), {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
+		return new Response('Not found', { status: 404 });
 	},
 };

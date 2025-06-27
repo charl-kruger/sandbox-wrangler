@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HttpClient } from '@cloudflare/sandbox/client';
